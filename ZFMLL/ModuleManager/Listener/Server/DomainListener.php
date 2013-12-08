@@ -30,6 +30,13 @@ class DomainListener extends AbstractListener
     public function authorizeModule()
     {
     	$hostname = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : @$_SERVER['HTTP_HOST'];
-        return in_array($hostname, $this->config);
+    	if(isset($this->config['static'])) {
+            return $hostname == $this->config['static'];
+    	}
+    	else if(isset($this->config['regex'])) {
+            return preg_match('(^' . $this->config['regex'] . '$)', $hostname);
+    	}
+        else
+            return in_array($hostname, $this->config);
     }
 }
